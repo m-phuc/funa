@@ -1,0 +1,356 @@
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: normal;
+  src: url("/funa/fonts/Inter-Regular.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: bold;
+  src: url("/funa/fonts/Inter-Bold.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Roboto Mono";
+  font-style: normal;
+  font-weight: normal;
+  src: url("/funa/fonts/RobotoMono-Regular.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Roboto Mono";
+  font-style: normal;
+  font-weight: bold;
+  src: url("/funa/fonts/RobotoMono-Bold.woff2") format("woff2");
+}
+:root {
+  --black:	#202020;
+  --white:	#ffffff;
+  --gray0:	#f8f8f8;
+  --gray1:	#f0f0f0;
+  --gray2:	#d0d0d0;
+  --gray3:	#b0b0b0;
+  --gray4:	#808080;
+  --blue:	#1878e8;
+  --blue-light:	#e8f2fd;
+  --blue-dark:	#1360ba;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+* {
+  box-sizing: border-box;
+  font-variant-numeric: tabular-nums;
+}
+
+html {
+  background-color: var(--white);
+  color: var(--black);
+  cursor: default;
+  font-family: "Inter", sans-serif;
+  scrollbar-gutter: stable;
+}
+
+header {
+  background-color: var(--white);
+  border-bottom: 2px solid var(--blue-light);
+  display: flex;
+  font-weight: bold;
+  grid-column: span 2;
+  z-index: 1;
+}
+header > nav {
+  display: flex;
+}
+header > nav > a {
+  color: var(--blue-dark);
+  text-decoration: none;
+}
+header > nav > a:hover {
+  background-color: var(--blue-light);
+}
+
+aside > nav {
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+}
+aside > nav > a {
+  border-radius: 4px;
+  color: var(--black);
+  padding: 8px;
+  text-decoration: none;
+}
+aside > nav > a:hover {
+  background-color: var(--gray1);
+}
+
+a {
+  color: var(--blue);
+}
+
+button {
+  height: 32px;
+  padding: 0 16px;
+}
+
+details > summary {
+  background-color: var(--gray1);
+  border: 1px solid var(--gray4);
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 4px 16px;
+  user-select: none;
+  width: max-content;
+}
+details > summary > h4 {
+  display: inline-block;
+  margin: 0;
+}
+
+h1, h2 {
+  border-bottom: 1px solid var(--gray2);
+}
+
+iframe {
+  border: 8px solid var(--gray1);
+  border-radius: 4px;
+  display: block;
+  margin: 8px 0;
+  outline: none;
+  padding: 0;
+  width: 100%;
+}
+
+p {
+  line-height: 1.5em;
+}
+
+code, pre {
+  border-radius: 4px;
+  font-family: "Roboto Mono", monospace;
+  tab-size: 4;
+  white-space: break-spaces;
+}
+
+code {
+  background-color: #eeeeee;
+  padding: 0 2px;
+}
+
+pre {
+  background-color: #fafaf7;
+  counter-reset: line;
+  cursor: text;
+  padding: 8px;
+}
+pre > span {
+  counter-increment: line;
+  display: list-item;
+  list-style: "";
+  margin-left: -8px;
+  padding-left: 4em;
+  position: relative;
+}
+pre > span::before {
+  background-color: var(--gray1);
+  color: var(--gray3);
+  content: counter(line);
+  cursor: default;
+  display: inline-block;
+  padding-right: 0.5em;
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  text-align: right;
+  user-select: none;
+  width: 3em;
+}
+
+.code.html .tag {
+  color: #2895cc;
+}
+.code.html .attribute {
+  color: #808080;
+}
+.code.html .string {
+  color: #47991e;
+}
+.code.html .operator {
+  color: #0000f0;
+}
+.code.html .expression {
+  color: #cc2844;
+  font-weight: bold;
+}
+.code.html .comment {
+  color: #a0a0a0;
+}
+.code.css {
+  color: #606060;
+}
+.code.css .at {
+  color: #47991e;
+  font-weight: bold;
+}
+.code.css .class {
+  color: #cc2844;
+  font-weight: bold;
+}
+.code.css .id {
+  color: #2895cc;
+  font-weight: bold;
+}
+.code.css .tag {
+  color: #000000;
+  font-weight: bold;
+}
+.code.css .pseudo {
+  background-color: #f0f0f0;
+  color: #000000;
+}
+.code.css .property {
+  color: #808080;
+}
+.code.css .value {
+  color: #000000;
+}
+.code.js .comment {
+  color: #a0a0a0;
+}
+.code.js .string {
+  background-color: #f0f0f0;
+}
+.code.js .regex {
+  color: #f08000;
+  font-weight: bold;
+}
+.code.js .operator {
+  color: #606060;
+}
+.code.js .number {
+  color: #00a000;
+  font-weight: bold;
+}
+.code.js .literal {
+  color: #f00000;
+  font-weight: bold;
+}
+.code.js .keyword {
+  color: #0000f0;
+}
+.code.js .property {
+  color: #8000f0;
+}
+.code.js .constant {
+  color: #00a000;
+}
+.code.js .class {
+  color: #f000f0;
+  font-weight: bold;
+}
+.code .hex {
+  color: #0000f0;
+}
+.code .at {
+  color: #f08000;
+}
+.code .class {
+  color: #f00000;
+  font-weight: bold;
+}
+.code .id {
+  color: #0000f0;
+  font-weight: bold;
+}
+.code .pseudo {
+  background-color: #404040;
+  color: #f0f0f0;
+}
+.code .function {
+  color: #808000;
+}
+
+#menu {
+  display: none;
+}
+
+@media only screen and (max-width: 767px) {
+  html {
+    font-size: 14px;
+  }
+  body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+  }
+  header {
+    justify-content: space-between;
+    line-height: 28px;
+    position: sticky;
+    top: 0;
+  }
+  header > label {
+    color: var(--blue-dark);
+    padding: 0 8px;
+  }
+  header > nav > a {
+    padding: 0 16px;
+  }
+  aside {
+    background-color: var(--white);
+    display: none;
+    padding: 16px 0;
+    position: fixed;
+    left: 0;
+    top: 30px;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+  }
+  main {
+    padding: 8px;
+  }
+  pre {
+    font-size: 13px;
+    margin: 8px -8px;
+    tab-size: 2;
+  }
+  #menu:checked + header > label {
+    background-color: var(--blue-dark);
+    color: var(--white);
+  }
+  #menu:checked ~ aside {
+    display: block;
+  }
+}
+@media only screen and (min-width: 768px) {
+  html {
+    font-size: 15px;
+  }
+  body {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 16px;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0;
+  }
+  header {
+    justify-content: flex-end;
+  }
+  header > label {
+    display: none;
+  }
+  header > nav > a {
+    padding: 16px 24px;
+  }
+  pre {
+    font-size: 14px;
+  }
+}

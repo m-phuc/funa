@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Doc - Funa</title>
+	<link rel="stylesheet" href="/funa/assets/styles.css">
+	<script src="/funa/assets/doc.js" type="module"></script>
+</head>
+<body>
+
+<input type="checkbox" id="menu">
+<header>
+	<label for="menu">Menu</label>
+	<nav>
+		<a href="/funa">FUNA</a>
+		<a href="https://github.com/m-phuc/funa">Github</a>
+	</nav>
+</header>
+
+<aside>
+	<nav>
+<a href="#introduction">Introduction</a>
+<a href="#installation">Installation</a>
+<a href="#quick-start">Quick Start</a>
+<a href="#text-interpolation">Text Interpolation</a>
+<a href="#property-binding">Property Binding</a>
+<a href="#data-context">Data Context</a>
+<a href="#data-formatting">Data Formatting</a>
+<a href="#data-model">Data Model</a>
+<a href="#conditional-rendering">Conditional Rendering</a>
+<a href="#event-handling">Event Handling</a>
+<a href="#two-way-binding">Two-way Binding</a>
+<a href="#template-switching">Template Switching</a>
+<a href="#template-rendering">Template Rendering</a>
+<a href="#dependency-property">Dependency Property</a>
+<a href="#funa.d.ts">funa.d.ts</a>
+	</nav>
+</aside>
+
+<main>
+<h2 id="introduction">Introduction</h2>
+<p><strong>Funa</strong> is a JavaScript data binding library that allows you to create web apps with ease.</p>
+<p>By extending HTML declarative syntax with interpolations and binding expressions, it seamlessly connects UI to underlying logical code, eliminating the need for complex DOM manipulation.</p>
+<p>The library was made for those who prefer the traditional approach, keeping HTML and JS separated:<br>HTML just describes the layout and content, while JS just handles the data and logic.</p>
+<h2 id="installation">Installation</h2>
+<p>Funa is a zero-dependency library.</p>
+<p>Get the latest release <a href="https://github.com/m-phuc/funa/releases">here</a>, then import it as a module:</p>
+<pre class="code js">import { Funa } from './funa.js';</pre>
+<p>For TypeScript support, store the <code>funa.d.ts</code> file alongside the <code>funa.js</code> file.</p>
+<h2 id="quick-start">Quick Start</h2>
+<p>Here is a basic example to give you a glance at:</p>
+<pre class="code html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+	&lt;script src=&quot;demo.js&quot; type=&quot;module&quot;&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;template&gt;
+	&lt;p&gt;Hello, {name}!&lt;/p&gt;
+&lt;/template&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+<pre class="code js">import { Funa } from './funa.js';
+
+const app = new Funa({
+	data: {
+		name: 'Funa'
+	}
+});
+
+app.render();</pre>
+<h2 id="text-interpolation">Text Interpolation</h2>
+<pre class="code html">&lt;any&gt;{data}&lt;/any&gt;
+&lt;any attr={data}&gt;&lt;/any&gt;
+
+&lt;!-- reactive --&gt;
+&lt;any&gt;{$data}&lt;/any&gt;
+&lt;any attr={$data}&gt;&lt;/any&gt;</pre>
+<p>Interpolation enables representing dynamic data placed in curly braces within <strong>text nodes</strong> or <strong>attribute values</strong>.</p>
+<p>If there is a <code>$</code> prefix in the expression, it will automatically update when the data changes (reactive interpolation).<br>Otherwise, it is evaluated once when rendered.</p>
+<p>The data path can be a property or sub-property (using dot notation).</p>
+<p><code>null</code> or <code>undefined</code> will result in an empty string.</p>
+<details>
+	<summary>
+		<h4>Example</h4>
+	</summary>
+	<pre class="code html">&lt;template&gt;
+	&lt;p&gt;Count down for {k} seconds: {$k}&lt;/p&gt;
+&lt;/template&gt;</pre>
+	<pre class="code js">const app = new Funa({
+	data: {
+		k: 10
+	}
+});
+
+app.render();
+
+let timer = setInterval(() =&gt; {
+	if (!(--app.data.k)) {
+		clearInterval(timer);
+	}
+}, 1000);</pre>
+</details>
+<h2 id="property-binding">Property Binding</h2>
+<pre class="code html">&lt;any .property={data}&gt;&lt;/any&gt;
+
+&lt;!-- reactive --&gt;
+&lt;any .property={$data}&gt;&lt;/any&gt;</pre>
+<p>Property binding is somewhat like text interpolation, but sets values to element properties instead of printing them out.</p>
+<p>The syntax is exactly the same as setting an attribute, except for prepending a <code>.</code>.</p>
+<p>When there is only one expression, the data value is passed directly without string conversion, allowing the binding of non-string data types (such as booleans, numbers).</p>
+<p>If multiple expressions or strings are involved, string concatenation is performed to form a composite value.</p>
+<details>
+	<summary>
+		<h4>Example</h4>
+	</summary>
+	<pre class="code html">&lt;template&gt;
+	&lt;button .disabled={busy}&gt;Send&lt;/button&gt;
+&lt;/template&gt;</pre>
+	<pre class="code js">const app = new Funa({
+	data: {
+		busy: true
+	}
+});
+
+app.render();</pre>
+</details>
+<h2 id="data-context">Data Context</h2>
+<pre class="code html">&lt;any :data&gt;&lt;/any&gt;
+&lt;any :=data&gt;&lt;/any&gt;
+
+&lt;!-- reactive --&gt;
+&lt;any $data&gt;&lt;/any&gt;
+&lt;any $=data&gt;&lt;/any&gt;</pre>
+<p>Data context serves as the default source when resolving property access during interpolation.</p>
+<p>It is inherited from the parent, unless explicitly overridden by setting a <strong>source expression</strong>.</p>
+<p>- Use <code>:</code> directive to create a one-time binding, the element is rendered once, subsequent data changes won't trigger re-rendering.</p>
+<p>- Use <code>$</code> directive to create a reactive binding, the element is re-rendered whenever the referenced data changes.</p>
+<p>The data path can be a property or sub-property, but it must resolve to an object.</p>
+<p>Note that HTML attribute names are normalized to lowercase on parsing, to represent uppercase letters:</p>
+<p>- Add a <code>-</code> before the character wanted uppercase.</p>
+<p>- Place the data path within the attribute value.</p>
+<pre class="code html">&lt;any :data-path&gt;&lt;/any&gt;
+&lt;any :=dataPath&gt;&lt;/any&gt;</pre>
+<p>When the data context is set to an array, Funa will loop through and render each element, creating a repeating UI pattern.</p>
+<p>If the array contains non-object elements, use <code>?</code> within interpolation to display its value.</p>
+<pre class="code html">&lt;ul :list&gt;
+	&lt;li&gt;{?}&lt;/li&gt;
+&lt;/ul&gt;</pre>
+<details>
+	<summary>
+		<h4>Example</h4>
+	</summary>
+	<pre class="code html">&lt;template&gt;
+	&lt;p&gt;Planets of the solar system:&lt;/p&gt;
+	&lt;ul :planets&gt;
+		&lt;li&gt;{name}&lt;/li&gt;
+	&lt;/ul&gt;
+&lt;/template&gt;</pre>
+	<pre class="code js">const app = new Funa({
+	data: {
+		planets: [
+			{ name: 'Mercury' },
+			{ name: 'Venus' },
+			{ name: 'Earth' },
+			{ name: 'Mars' },
+			{ name: 'Jupiter' },
+			{ name: 'Saturn' },
+			{ name: 'Uranus' },
+			{ name: 'Neptune' },
+		]
+	}
+});
+
+app.render();</pre>
+</details>
+<h2 id="data-formatting">Data Formatting</h2>
+<pre class="code html">&lt;any&gt;{data:format}&lt;/any&gt;
+&lt;any&gt;{data:format(...args)}&lt;/any&gt;</pre>
+<pre class="code js">{
+	as: {
+		format: {
+			/**
+			 * Formats data for representation.
+			 * 
+			 * @param value - the raw data
+			 * @param args - callback arguments in the expression
+			 */
+			convert(value, ...args) {
+				...
+			},
+			
+			/**
+			 * Parses formatted data into raw.
+			 * 
+			 * @param value - the formatted data
+			 * @param args - callback arguments in the expression
+			 */
+			revert(value, ...args) {
+				...
+			},
+		}
+	}
+}</pre>
+<p>During the interpolation process, the data is first casted to a string.</p>
+<p>To control how data is displayed, append an <strong>as expression</strong> after the data path to apply custom formatting.</p>
+<p>This can also apply for the case when the datatype of the data field and element property are not matched, so a custom formatting acts like the bridge.</p>
+<p>The formatting descriptor is defined in the <code>as</code> registry, and must implement one or both of the <code>convert</code> and <code>revert</code> callback functions.</p>
+<p>Parentheses are optional when calling with no arguments.</p>
+<details>
+	<summary>
+		<h4>Example</h4>
+	</summary>
+	<pre class="code html">&lt;template&gt;
+	&lt;p :planet&gt;{name} is the {pos:nth} planet from the Sun.&lt;/p&gt;
+&lt;/template&gt;</pre>
+	<pre class="code js">const app = new Funa({
+	data: {
+		planet: {
+			name: 'Earth',
+			pos: 3,
+		}
+	},
+	
+	as: {
+		nth: {
+			convert: (value) =&gt; (value === 1) ? '1st' : (value === 2) ? '2nd' : (value === 3) ? '3rd' : value + 'th'
+		}
+	},
+});
+
+app.render();</pre>
+</details>
+<h2 id="data-model">Data Model</h2>
+<pre class="code html">&lt;any %=model&gt;&lt;/any&gt;</pre>
+<pre class="code js">{
+	is: {
+		model: {
+			property: 'format',
+			...
+		}
+	}
+}</pre>
+<p>Specifying an <strong>is expression</strong> allows implicitly applying custom formatting based on pre-defined metadata, eliminating the need for repetitive <strong>as expression</strong> and ensuring a consistent approach to data representation throughout the templates.</p>
+<p>Model metadata is defined in the <code>is</code> registry, with each property mapping links a property name to its associated formatting descriptor.</p>
+<p>Explicitly specified <strong>as expression</strong> always take precedence over model-based formatting.</p>
+<details>
+	<summary>
+		<h4>Example</h4>
+	</summary>
+	<pre class="code html">&lt;template&gt;
+	&lt;p :planet %=Planet&gt;{name} is the {pos} planet from the Sun.&lt;/p&gt;
+&lt;/template&gt;</pre>
+	<pre class="code js">const app = new Funa({
+	data: {
+		planet: {
+			name: 'Earth',
+			pos: 3,
+		}
+	},
+	
+	as: {
+		nth: {
+			convert: (value) =&gt; (value === 1) ? '1st' : (value === 2) ? '2nd' : (value === 3) ? '3rd' : value + 'th'
+		}
+	},
+	
+	is: {
+		Planet: {
+			pos: 'nth'
+		}
+	},
+});
+
+app.render();</pre>
+</details>
+<h2 id="conditional-rendering">Conditional Rendering</h2>
+<pre class="code html">&lt;any ?=data&gt;&lt;/any&gt;
+&lt;any ?=test(...args)&gt;&lt;/any&gt;
+
+&lt;any !=data&gt;&lt;/any&gt;
+&lt;any !=test(...args)&gt;&lt;/any&gt;</pre>
+<pre class="code js">{
+	if: {
+		/**
+		 * @param args - callback arguments in the expression
+		 */
+		test(...args): boolean {
+			...
+		}
+	}
+}</pre>
+<p>Conditional rendering controls whether to render an element or not, by specifying an <strong>if expression</strong>.</p>
+<p>- <code>?</code> directive renders the element if the expression is truthy.</p>
+<p>- <code>!</code> directive renders the element if the expression is falsey.</p>
+<p>Expression value can be either:</p>
+<p>- A property of the current data context.</p>
+<p>- A callback function defined in the <code>if</code> registry.</p>
+<details>
+	<summary>
+		<h4>Example</h4>
+	</summary>
+	<pre class="code html">&lt;template&gt;
+	&lt;section :products&gt;
+		&lt;article&gt;
+			&lt;h3&gt;{name}&lt;/h3&gt;
+			&lt;div class=&quot;price&quot;&gt;
+				&lt;span&gt;${price}&lt;/span&gt;
+				&lt;s ?=discount()&gt;${listprice}&lt;/s&gt;
+			&lt;/div&gt;
+		&lt;/article&gt;
+	&lt;/section&gt;
+&lt;/template&gt;</pre>
+	<pre class="code js">const app = new Funa({
+	data: {
+		products: [
+			{
+				name: 'Sweat Design Storage Bin',
+				price: 19,
+				listprice: 24,
+			},
+			{
+				name: 'Strong Storage Basket',
+				price: 32,
+				listprice: 32,
+			},
+		]
+	},
+	
+	if: {
+		discount() {
+			return this.price &lt; this.listprice;
+		}
+	},
+});
+
+app.render();</pre>
+</details>
+<h2 id="event-handling">Event Handling</h2>
+<pre class="code html">&lt;any @event=func&gt;&lt;/any&gt;
+&lt;any @event=func(...args)&gt;&lt;/any&gt;</pre>
+<pre class="code js">{
+	on: {
+		/**
+		 * @param sender - the rendered element
+		 * @param event - event object representing the triggered event
+		 * @param args - callback arguments in the expression
+		 */
+		func(sender: HTMLElement, event: Event, ...args): void {
+			...
+		}
+	}
+}</pre>
+<p>The <strong>on expression</strong> adds an event listener to the current rendering DOM element.</p>
+<p>The callback function is defined in the <code>on</code> registry.</p>
+<p>Parentheses are optional when calling with no arguments.</p>
+<p>Omitting the event name will execute the callback function immediately after rendering.</p>
+<details>
+	<summary>
+		<h4>Example</h4>
+	</summary>
+	<pre class="code html">&lt;template&gt;
+	&lt;p&gt;{$count}&lt;/p&gt;
+	&lt;button @click=inc&gt;Click me&lt;/button&gt;
+&lt;/template&gt;</pre>
+	<pre class="code js">const app = new Funa({
+	data: {
+		count: 0
+	},
+	
+	on: {
+		inc() {
+			app.data.count++;
+		}
+	},
+});
+
+app.render();</pre>
+</details>
+<h2 id="two-way-binding">Two-way Binding</h2>
+<pre class="code html">&lt;any .property@event={$data}&gt;&lt;/any&gt;
+&lt;any .property@event={pre(...args) -&gt; $data:format(...args) -&gt; post(...args)}&gt;&lt;/any&gt;</pre>
+<p>Two-way binding establishes a connection between UI elements and data, ensuring that changes in one are instantly reflected in the other.</p>
+<p>This combines the power of property binding and event handling in one declaration.</p>
+<p><code>$</code> prefix is required on the data path.</p>
+<p>Nested data path is not supported.</p>
+<p><code>pre</code> and <code>post</code> are optional <strong>on expression</strong> callbacks.</p>
+<details>
+	<summary>
+		<h4>Example</h4>
+	</summary>
+	<pre class="code html">&lt;template&gt;
+	&lt;input type=&quot;text&quot; .disabled={$lock}&gt;
+	&lt;label&gt;
+		&lt;input type=&quot;checkbox&quot; .checked@change={$lock}&gt;
+		Lock
+	&lt;/label&gt;
+&lt;/template&gt;</pre>
+	<pre class="code js">const app = new Funa({
+	data: {
+		lock: false
+	}
+});
+
+app.render();</pre>
+</details>
+<h2 id="template-switching">Template Switching</h2>
+<pre class="code html">&lt;any #=tplId&gt;&lt;/any&gt;</pre>
+<p>Template switching changes the current rendering element to another element.</p>
+<p>It is intended to allow splitting up large templates into smaller, manageable pieces for improved organization and maintainability.</p>
+<p>It is also useful for inserting the content of one template into another, creating nested components or dynamically replacing sections of the UI.</p>
+<details>
+	<summary>
+		<h4>Example</h4>
+	</summary>
+	<pre class="code html">&lt;template&gt;
+&lt;ul :tree&gt;
+	&lt;li #=node&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/template&gt;
+
+&lt;template id=&quot;node&quot;&gt;
+&lt;li&gt;
+	&lt;span&gt;{name}&lt;/span&gt;
+	&lt;ul :children ?=length&gt;
+		&lt;li #=node&gt;&lt;/li&gt;
+	&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/template&gt;</pre>
+	<pre class="code js">const app = new Funa({
+	data: {
+		tree: [
+			{
+				name: 'A', children: [
+					{
+						name: 'A.1', children: [
+							{
+								name: 'A.1.i', children: []
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+});
+
+app.render();</pre>
+</details>
+<h2 id="template-rendering">Template Rendering</h2>
+<pre class="code js">/**
+ * Renders template from its name.
+ * 
+ * @param target - the parent element that hold templates
+ * @param name - the id of the template to render
+ */
+render(target?: Element = document.body, name?: string): void;</pre>
+<p>This function first parses all templates that are direct children of the <code>target</code>, and then renders the specified one.</p>
+<p>If none is specified, the first one will be applied.</p>
+<h2 id="dependency-property">Dependency Property</h2>
+<p>Declaring dependencies between data properties allows automatically triggering updates in the connected UI elements.</p>
+<pre class="code js">/**
+ * Binds `target.dependencyProperty` to `source.sourceProperty`.
+ * When the source changes, the target's listeners will receive a notification.
+ */
+depend(target: any, dependencyProperty: string, source: any, sourceProperty: string | string[]);</pre>
+<pre class="code js">/**
+ * Defines a new property for the target object, as well as its dependencies.
+ * Combines the `Object.defineProperty` and the `depend` function.
+ */
+define(target: any, property: string, descriptor: {
+	get: () =&gt; any,
+	set: (value: any) =&gt; void,
+	links: (string | { src: any, prop: string })[],
+});</pre>
+<pre class="code js">/**
+ * Signal to update all the `target.property` dependencies.
+ */
+notify(target: any, property: string);</pre>
+<h2 id="funa.d.ts">funa.d.ts</h2>
+<pre class="code js">type FunaAs&lt;T, U&gt; = {
+    convert?: (value: T, ...args: (string | number)[]) =&gt; U;
+    revert?: (value: U, ...args: (string | number)[]) =&gt; T;
+};
+
+type FunaIf = (...args: (string | number)[]) =&gt; boolean;
+
+type FunaIs = {
+    [key: string]: (string | FunaIs);
+};
+
+type FunaOn = (sender: Element, event: Event, ...args: (string | number)[]) =&gt; void;
+
+interface FunaConfig {
+    bypassTags: string[];
+}
+
+interface FunaInit {
+    config?: FunaConfig;
+    data?: Record&lt;string, any&gt;;
+    as?: Record&lt;string, FunaAs&lt;any, any&gt;&gt;;
+    if?: Record&lt;string, FunaIf&gt;;
+    is?: Record&lt;string, FunaIs&gt;;
+    on?: Record&lt;string, FunaOn&gt;;
+}
+
+interface FunaPropertyDescriptor extends PropertyDescriptor {
+    links: (string | { src: any; prop: string; })[];
+}
+
+declare class Funa&lt;T extends FunaInit&gt; {
+    constructor(init?: T);
+	
+    version: number;
+	
+    data: Record&lt;string, any&gt; &amp; T['data'];
+    as: Record&lt;string, FunaAs&lt;any, any&gt;&gt; &amp; T['as'];
+    if: Record&lt;string, FunaIf&gt; &amp; T['if'];
+    is: Record&lt;string, FunaIs&gt; &amp; T['is'];
+    on: Record&lt;string, FunaOn&gt; &amp; T['on'];
+	
+    render: (target?: Element, name?: string) =&gt; void;
+	
+    depend(target: any, dependencyProperty: string, sourceProperty: string | string[]): void;
+    depend(target: any, dependencyProperty: string, source: any, sourceProperty: string | string[]): void;
+	
+    define(target: any, property: string, descriptor: FunaPropertyDescriptor): void;
+	
+    notify(target: any, property: string): void;
+}
+
+export { Funa };</pre>
+</main>
+
+</body>
+</html>

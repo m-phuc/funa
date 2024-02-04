@@ -1,0 +1,9 @@
+{
+	"compilerOptions": {
+		"target": "ES2021",
+		"module": "ES2020",
+		"alwaysStrict": true,
+		"newLine": "lf",
+		"removeComments": true
+	}
+}

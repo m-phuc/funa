@@ -1,0 +1,74 @@
+[hidden] {
+	display: none !important;
+}
+
+* {
+	box-sizing: border-box;
+	font-variant-numeric: tabular-nums;
+}
+
+html {
+	background-color: white;
+	color: black;
+	cursor: default;
+	font-family: 'Roboto Mono', 'Consolas', monospace;
+	font-size: 15px;
+	scrollbar-gutter: stable;
+}
+
+body {
+	margin: 0 auto;
+	max-width: 800px;
+}
+
+.toolbar {
+	align-items: center;
+	display: flex;
+	gap: 16px;
+	height: 32px;
+	margin: 16px 0;
+	
+	& > button {
+		font-size: 100%;
+		outline: none;
+		padding: 0 16px;
+		height: 100%;
+	}
+	
+	& > select {
+		font-size: 100%;
+		outline: none;
+		padding: 0 8px;
+		min-width: 200px; height: 100%;
+	}
+}
+
+.success {
+	color: rgb(0,175,0);
+	display: block;
+	margin-left: 2rem;
+	position: relative;
+	
+	&::before {
+		content: '✓';
+		position: absolute;
+		left: -2rem;
+	}
+}
+
+.failure {
+	color: rgb(250,100,0);
+	display: block;
+	margin-left: 2rem;
+	position: relative;
+	
+	&::before {
+		content: '✖';
+		position: absolute;
+		left: -2rem;
+	}
+	
+	& > div {
+		color: rgb(200,50,0);
+	}
+}
